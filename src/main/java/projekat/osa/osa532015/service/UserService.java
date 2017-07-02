@@ -23,6 +23,12 @@ public class UserService implements UserServiceInterface{
 	}
 	
 	@Override
+	public User findByUsername(String username){
+		User user = userRepository.findByUsername(username);
+			return user;
+	}
+	
+	@Override
 	public void add(User user){
 //		user = userRepository.findOne(user.getId());
 //		user.getOrders().add(order);

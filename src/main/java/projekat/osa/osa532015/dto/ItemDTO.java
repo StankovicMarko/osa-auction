@@ -12,43 +12,43 @@ import projekat.osa.osa532015.entity.Item;
 
 public class ItemDTO implements Serializable{
 
-	private Long id;
+	private Integer id;
 	private String name;
 	private String description;
 	private String picture;
 	private Boolean sold;
+	private String owner;
 	@JsonIgnore
 	private Set<Auction> auctions = new HashSet<>();
 	
 	
 	public ItemDTO(){}
-	
-	
-	
-	public ItemDTO(Long id, String name, String description, String picture, Boolean sold, Set<Auction> auctions) {
+
+
+	public ItemDTO(Integer id, String name, String description, String picture, Boolean sold, String owner,
+			Set<Auction> auctions) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.picture = picture;
 		this.sold = sold;
+		this.owner = owner;
 		this.auctions = auctions;
 	}
-
-
-
+	
 	public ItemDTO(Item item){
-		this(item.getId(), item.getName(), item.getDescription(), item.getPicture()
-				,item.getSold(), item.getAuctions());
+		this(item.getId(), item.getName(), item.getDescription(), item.getPicture(), item.getSold(),
+				item.getUser().getUsername(), item.getAuctions());
 	}
-	
-	
-	public Long getId() {
+
+
+	public Integer getId() {
 		return id;
 	}
 
 
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -93,6 +93,16 @@ public class ItemDTO implements Serializable{
 	}
 
 
+	public String getOwner() {
+		return owner;
+	}
+
+
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+
+
 	public Set<Auction> getAuctions() {
 		return auctions;
 	}
@@ -101,6 +111,9 @@ public class ItemDTO implements Serializable{
 	public void setAuctions(Set<Auction> auctions) {
 		this.auctions = auctions;
 	}
+	
+	
+	
 
 
 	

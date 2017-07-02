@@ -8,6 +8,7 @@ import projekat.osa.osa532015.entity.User;
 
 
 public interface UserRepository extends JpaRepository<User, Long> {
+	
     User findByUsername(String username);
     
     List<User> findAll();

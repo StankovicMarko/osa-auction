@@ -25,7 +25,7 @@ public class Bid implements Serializable {
 	@Id
 	@GeneratedValue(strategy=IDENTITY)
 	@Column(name="bid_id", unique=true, nullable=false)
-	private Long id;
+	private Integer id;
 	
 	
 	@Column(name="bid_price", unique=true, nullable=false)
@@ -51,7 +51,7 @@ public class Bid implements Serializable {
 	
 	public Bid(){}
 	
-	public Bid(Long id, Float price, Date date, User bid_user, Auction auction) {
+	public Bid(Integer id, Float price, Date date, User bid_user, Auction auction) {
 		super();
 		this.id = id;
 		this.price = price;
@@ -60,11 +60,11 @@ public class Bid implements Serializable {
 		this.auction = auction;
 	}
 
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

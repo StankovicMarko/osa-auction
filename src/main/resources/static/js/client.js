@@ -18,9 +18,66 @@ $(function () {
 
     $("#add_new_item").click(function() {
       $("#add_item_window").modal("show");
+      $("#upload-file-input").on("change", uploadFile);
     });
 
-    $("#upload-file-input").on("change", uploadFile);
+    all_items.on('click', 'input.edit_item', function(e) {
+      $("#edit_item_window").modal("show");
+      var item_id = $(this).attr('item_id');
+      var row = $(this).closest('tr');
+      var n_el = row.find(".name");
+      var name = n_el.text();
+      var d_el = row.find(".desc");
+      var desc = d_el.text();
+      $("#edit_item_name").val(name);
+      $("#edit_item_desc").val(desc);
+      $("#edit_upload-file-input").on("change", uploadFileEdit);
+
+
+      function uploadFileEdit() {
+        $.ajax({
+            url: "/uploadFile",
+            type: "POST",
+            data: new FormData($("#edit_upload-file-form")[0]),
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            cache: false,
+            headers: createAuthorizationTokenHeader(),
+            success: function(data) {
+              $("#edit_item").click(function() {
+                var edit_item = {
+                  "name": $("#edit_item_name").val(),
+                  "description": $("#edit_item_desc").val(),
+                  "picture": data
+                };
+
+                $.ajax({
+                  url: "/api/items/"+item_id,
+                  type: "PUT",
+                  data: JSON.stringify(edit_item),
+                  contentType: "application/json; charset=utf-8",
+                  dataType: "json",
+                  headers: createAuthorizationTokenHeader(),
+                  success: function(data, textStatus, jqXHR) {
+                     window.location.replace("/");
+                  },
+                  error: function(jqXHR, textStatus, errorThrown) {
+                    console.log("ERROR");
+                  }
+                });
+
+            });
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            console.log("ERROR"+ textStatus);
+          }
+        });
+      }
+    });
+
+
+
 
     function uploadFile() {
       $.ajax({
@@ -40,7 +97,6 @@ $(function () {
                 "picture": data
               };
 
-              console.log(new_item);
               $.ajax({
                 url: "/api/items",
                 type: "POST",
@@ -49,18 +105,15 @@ $(function () {
                 dataType: "json",
                 headers: createAuthorizationTokenHeader(),
                 success: function(data, textStatus, jqXHR) {
-                  appendItem(data);
+                  // appendItem(data);
+                  // $("#upload-file-input").val("");
+                  // $("#item_name").val("");
+                  // $("#item_desc").val("");
+                  // $("#add_item_window").modal("hide");
+                   window.location.replace("/");
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                  if (jqXHR.status === 401) {
-                    $('#loginErrorModal')
-                      .modal("show")
-                      .find(".modal-body")
-                      .empty()
-                      .html("<p>Spring exception:<br>" + jqXHR.responseJSON.exception + "</p>");
-                  } else {
-                    throw new Error("an unexpected error occured: " + errorThrown);
-                  }
+                  console.log("ERROR");
                 }
               });
 
@@ -72,36 +125,6 @@ $(function () {
       });
     } // function uploadFile
 
-    
-      $(".delete_user").click(function() {
-          e.preventDefault();
-          if (confirm("Are you sure you want to delete this item?")) {
-            var item_id = $(this).attr('item_id');
-            var row = $(this).closest('tr'); //najblizi njemu jer taj tr sadrzi bas taj input
-
-            $.ajax({
-              url: "/api/items/"+item_id,
-              type: "DELETE",
-              contentType: "application/json; charset=utf-8",
-              dataType: "json",
-              headers: createAuthorizationTokenHeader(),
-              success: function(data, textStatus, jqXHR) {
-                row.remove();
-              },
-              error: function(jqXHR, textStatus, errorThrown) {
-                if (jqXHR.status === 401) {
-                  $('#loginErrorModal')
-                    .modal("show")
-                    .find(".modal-body")
-                    .empty()
-                    .html("<p>Spring exception:<br>" + jqXHR.responseJSON.exception + "</p>");
-                } else {
-                  throw new Error("an unexpected error occured: " + errorThrown);
-                }
-              }
-            });
-          }
-          });
 
     $("#get_all_items").click(function () {
         $.ajax({
@@ -126,8 +149,9 @@ $(function () {
         all_items.append(
           '<tr>' +
           '<td> <img src="' + item.picture + '" alt="pi" style="height:60px; width:60px;"> </td>' +
-          '  <td class="usn"> ' + item.name + ' </td>' +
-          '  <td> ' + item.description + '  </td>' +
+          '  <td class="name">' + item.name + '</td>' +
+          '  <td class="desc">' + item.description + '</td>' +
+          '  <td class="owner">' + item.owner + '</td>' +
           '<td> ' + item.sold + '  </td>' +
           '<td>' +
           '<input type="button" class="btn btn-default edit_item" value="edit"' +
@@ -138,6 +162,27 @@ $(function () {
           '</tr>'
         );
       }
+
+
+      all_items.on('click', 'input.delete_item', function(e) {
+          e.preventDefault();
+          if (confirm("Are you sure you want to delete this item?")) {
+            var item_id = $(this).attr('item_id');
+            var row = $(this).closest('tr'); //najblizi njemu jer taj tr sadrzi bas taj input
+
+            $.ajax({
+              url: "/api/items/"+item_id,
+              type: "DELETE",
+              headers: createAuthorizationTokenHeader(),
+              success: function(data, textStatus, jqXHR) {
+                row.remove();
+              },
+              error: function(jqXHR, textStatus, errorThrown) {
+                console.log("ERROR" + textStatus);
+              }
+            });
+          }
+          });
 
     function getJwtToken() {
         return localStorage.getItem(TOKEN_KEY);

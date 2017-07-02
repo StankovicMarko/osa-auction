@@ -30,7 +30,7 @@ public class Auction implements Serializable {
 	@Id                                 
 	@GeneratedValue(strategy=IDENTITY) 
 	@Column(name="auction_id", unique=true, nullable=false) 
-	private Long auction_id;
+	private Integer auction_id;
 	
 	@Column(name="start_price", unique=false, nullable=false)
 	private Float startPrice;
@@ -71,7 +71,7 @@ public class Auction implements Serializable {
 	public Auction(){}
 
 
-	public Auction(Long auction_id, Float startPrice, Date startDate, Date endDate, String role, Item auctionItem, User user,
+	public Auction(Integer auction_id, Float startPrice, Date startDate, Date endDate, String role, Item auctionItem, User user,
 			Set<Bid> bids) {
 		
 		super();
@@ -85,12 +85,12 @@ public class Auction implements Serializable {
 	}
 
 
-	public Long getId() {
+	public Integer getId() {
 		return auction_id;
 	}
 
 
-	public void setId(Long auction_id) {
+	public void setId(Integer auction_id) {
 		this.auction_id = auction_id;
 	}
 
@@ -161,12 +161,12 @@ public class Auction implements Serializable {
 	}
 
 
-	public Long getAuction_id() {
+	public Integer getAuction_id() {
 		return auction_id;
 	}
 
 
-	public void setAuction_id(Long auction_id) {
+	public void setAuction_id(Integer auction_id) {
 		this.auction_id = auction_id;
 	}
 

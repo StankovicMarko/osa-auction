@@ -113,6 +113,7 @@
                       <th> picture </th>
                       <th> name </th>
                       <th> description </th>
+                      <th> owner </th>
                       <th> sold? </th>
                       <th> options </th>
                     </tr>
@@ -151,13 +152,39 @@
                     <input type="text" class="form-control" id="item_desc" placeholder="item_desc"
                            required name="item_desc">
                 </div>
-
-
-
-
             </div>
             <div class="modal-footer">
               <button id="add_item" type="button" class="btn btn-default"> add item</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" tabindex="-1" role="dialog" id="edit_item_window">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">edit item</h4>
+            </div>
+            <div class="modal-body">
+              <form id="edit_upload-file-form">
+              <label for="edit_upload-file-input">Upload your file:</label>
+              <input id="edit_upload-file-input" type="file" name="uploadfile" accept="*" />
+                </form>
+
+                <div class="form-group">
+                    <input type="text" class="form-control" id="edit_item_name" placeholder="edit_item_name"
+                           required name="edit_item_name">
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="edit_item_desc" placeholder="edit_item_desc"
+                           required name="edit_item_desc">
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button id="edit_item" type="button" class="btn btn-default"> edit item</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div><!-- /.modal-content -->

@@ -56,5 +56,7 @@ public class ImageUploadController {
 	  
 	  return new ResponseEntity<String>("/images/"+filename,HttpStatus.OK);
 	} // method uploadFile
+	
+	
 
 }

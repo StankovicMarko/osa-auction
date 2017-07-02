@@ -14,7 +14,7 @@ public class Authority implements Serializable{
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "authority_seq")
     @SequenceGenerator(name = "authority_seq", sequenceName = "authority_seq", allocationSize = 1)
-    private Long id;
+    private Integer id;
 
     @Column(name = "name", length = 50)
     @NotNull
@@ -24,11 +24,11 @@ public class Authority implements Serializable{
     @ManyToMany(mappedBy = "authorities", fetch = FetchType.LAZY)
     private List<User> users;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

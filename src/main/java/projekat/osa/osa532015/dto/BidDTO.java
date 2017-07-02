@@ -8,7 +8,7 @@ import projekat.osa.osa532015.entity.Bid;
 
 public class BidDTO implements Serializable{
 	
-	private Long id;
+	private Integer id;
 	private Float price;
 	private Date date;
 	private long user_id;
@@ -17,7 +17,7 @@ public class BidDTO implements Serializable{
 	
 	public BidDTO(){}
 
-	public BidDTO(Long id, Float price, Date date, long bid_user, long auction) {
+	public BidDTO(Integer id, Float price, Date date, long bid_user, long auction) {
 		super();
 		this.id = id;
 		this.price = price;
@@ -33,11 +33,11 @@ public class BidDTO implements Serializable{
 	}
 	
 
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
