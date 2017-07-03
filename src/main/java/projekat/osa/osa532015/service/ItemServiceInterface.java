@@ -17,5 +17,6 @@ public interface ItemServiceInterface {
 	Item save(Item auction);
 	
 	void remove(Integer id);
+;
 	
 }

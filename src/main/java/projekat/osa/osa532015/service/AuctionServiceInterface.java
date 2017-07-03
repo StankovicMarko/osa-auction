@@ -16,6 +16,7 @@ public interface AuctionServiceInterface {
 	Auction save(Auction auction);
 	
 	void remove(Integer id);
+
 	
 }
 

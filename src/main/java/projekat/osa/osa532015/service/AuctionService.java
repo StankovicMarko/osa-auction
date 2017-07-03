@@ -26,6 +26,7 @@ public class AuctionService implements AuctionServiceInterface{
 	public List<Auction> findAll() {
 		return auctionRepository.findAll();
 	}
+	
 
 	@Override
 	public Auction save(Auction auction) {
@@ -36,4 +37,5 @@ public class AuctionService implements AuctionServiceInterface{
 	public void remove(Integer id) {
 		auctionRepository.delete(id);
 	}
+	
 }

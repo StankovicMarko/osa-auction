@@ -29,10 +29,14 @@ public class UserService implements UserServiceInterface{
 	}
 	
 	@Override
-	public void add(User user){
-//		user = userRepository.findOne(user.getId());
-//		user.getOrders().add(order);
-		userRepository.save(user);
+	public User add(User user){
+		return userRepository.save(user);
+	}
+	
+	@Override
+	public User findOne(Integer id){
+		User user = userRepository.findOne(id);
+			return user;
 	}
 
 }

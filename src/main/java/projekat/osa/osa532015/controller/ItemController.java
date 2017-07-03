@@ -1,6 +1,7 @@
 package projekat.osa.osa532015.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.websocket.server.PathParam;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import projekat.osa.osa532015.dto.AuctionDTO;
@@ -55,12 +57,29 @@ public class ItemController {
 	@GetMapping
 	public ResponseEntity<List<ItemDTO>> getItems() {
 		List<Item> items = itemService.findAll();
-		//convert categories to DTOs
 		List<ItemDTO> itemsDTO = new ArrayList<ItemDTO>();
 		for (Item i : items) {
 			itemsDTO.add(new ItemDTO(i));
 		}
 		return new ResponseEntity<List<ItemDTO>>(itemsDTO, HttpStatus.OK);
+	}
+	
+	@GetMapping(path="/my")
+	public ResponseEntity<List<ItemDTO>> getMyAuctions(@RequestHeader(value="Authorization") String token) {
+		String username = jwtTokenUtil.getUsernameFromToken(token);
+		User user = userService.findByUsername(username);
+		Integer user_id = user.getId();
+		
+		List<Item> items = itemService.findAll();
+		List<ItemDTO> itemDTO = new ArrayList<ItemDTO>();
+		
+		for (Item i : items) {
+			if(i.getUser().getId() != user_id){
+				continue;
+			}
+			itemDTO.add(new ItemDTO(i));
+		}
+		return new ResponseEntity<List<ItemDTO>>(itemDTO, HttpStatus.OK);
 	}
 	
 	@PostMapping(consumes="application/json")
@@ -74,6 +93,8 @@ public class ItemController {
 		item.setUser(user);
 	
 		item = itemService.save(item);
+		
+		logger.info("new item"+item.getId()+item.getName());
 		return new ResponseEntity<ItemDTO>(new ItemDTO(item), HttpStatus.CREATED);	
 	}
 
@@ -92,7 +113,7 @@ public class ItemController {
 		item.setPicture(itemDTO.getPicture());
 	
 		item = itemService.save(item);
-		
+		logger.info("changed item"+item.getId()+item.getName());
 		return new ResponseEntity<ItemDTO>(new ItemDTO(item), HttpStatus.OK);	
 	}
 	
@@ -102,10 +123,13 @@ public class ItemController {
 		Item item= itemService.findOne(id);
 		if (item != null){
 			itemService.remove(id);
+			logger.info("deleted item"+item.getId()+item.getName());
 			return new ResponseEntity<Void>(HttpStatus.OK);
 		} else {		
 			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
 		}
 	}
+	
+	
 	
 }

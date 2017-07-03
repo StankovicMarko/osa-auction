@@ -11,11 +11,290 @@ $(function () {
     var $login = $("#login");
     var $userInfo = $("#userInfo").hide();
 
-    var get_all_items = $("#get_all_items");
     var all_items = $("#all_items");
-    var add_new_item = $("#add_new_item");
+    var all_auctions = $("#all_auctions");
     // FUNCTIONS =============================================================
 
+
+// USER DETAILS =========================
+
+$("#get_user_details").click(function() {
+  $.ajax({
+    url: "/api/users/details",
+    type: "GET",
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    headers: createAuthorizationTokenHeader(),
+    success: function(data, textStatus, jqXHR) {
+      var user_id = data.id;
+      $("#address").val(data.address);
+      $("#email").val(data.email);
+      $("#phone").val(data.phone);
+      $("#img").attr("src", data.picture);
+
+      $("#upload-userPic-input").on("change", uploadUserPic);
+      function uploadUserPic() {
+        $.ajax({
+            url: "/uploadFile",
+            type: "POST",
+            data: new FormData($("#upload-userPic-form")[0]),
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            cache: false,
+            headers: createAuthorizationTokenHeader(),
+            success: function(data) {
+              $("#send_changes").click(function() {
+                var edit_details = {
+                  "address": $("#address").val(),
+                  "email": $("#email").val(),
+                  "picture": data,
+                  "phone": $("#phone").val()
+                };
+
+                $.ajax({
+                  url: "/api/users/"+user_id,
+                  type: "PUT",
+                  data: JSON.stringify(edit_details),
+                  contentType: "application/json; charset=utf-8",
+                  dataType: "json",
+                  headers: createAuthorizationTokenHeader(),
+                  success: function(data, textStatus, jqXHR) {
+                     console.log("success!");
+                  },
+                  error: function(jqXHR, textStatus, errorThrown) {
+                    console.log("ERROR "+ textStatus);
+                  }
+                });
+
+            });
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            console.log("ERROR");
+          }
+        });
+      }
+
+
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      showResponse(jqXHR.status, errorThrown);
+    }
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+// /////// AUCTIONS======================
+
+$("#add_new_auction").click(function() {
+  $("#add_auction_window").modal("show");
+
+  $("#add_auction").click(function() {
+    var new_auction = {
+      "item_id": $("#item_id").val(),
+      "startDate": $("#start_date").val()+ " 00:00:00",
+      "endDate": $("#end_date").val() + " 00:00:00",
+      "startPrice": $("#start_price").val()
+    };
+
+    $.ajax({
+      url: "/api/auctions",
+      type: "POST",
+      data: JSON.stringify(new_auction),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      headers: createAuthorizationTokenHeader(),
+      success: function(data, textStatus, jqXHR) {
+         window.location.replace("/");
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log("ERROR "+textStatus);
+      }
+    });
+
+});
+});
+
+all_auctions.on('click', 'input.edit_auction', function(e) {
+  $("#edit_auction_window").modal("show");
+  var auction_id = $(this).attr('auction_id');
+  var row = $(this).closest('tr');
+  var sd_el = row.find(".startDate");
+  var startDate = sd_el.text();
+  var ed_el = row.find(".endDate");
+  var endDate = ed_el.text();
+  var sp_el = row.find(".startPrice");
+  var startPrice = sp_el.text();
+  $("#edit_start_date").val(startDate);
+  $("#edit_end_date").val(endDate);
+  $("#edit_start_price").val(startPrice);
+
+  $("#edit_auction").click(function() {
+    var edit_auction = {
+      "startDate": $("#edit_start_date").val(),
+      "endDate": $("#edit_end_date").val(),
+      "startPrice": $("#edit_start_price").val()
+    };
+
+    $.ajax({
+      url: "/api/auctions/"+auction_id,
+      type: "PUT",
+      data: JSON.stringify(edit_auction),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      headers: createAuthorizationTokenHeader(),
+      success: function(data, textStatus, jqXHR) {
+         window.location.replace("/");
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log("ERROR "+ textStatus);
+      }
+    });
+
+});
+});
+
+all_auctions.on('click', 'input.add_bid', function(e) {
+  $("#edit_auction_window").modal("show");
+  var auction_id = $(this).attr('auction_id');
+  var sp_el = row.find(".startPrice");
+  var startPrice = sp_el.text();
+    var add_bid = {
+      "auction_id": auction_id,
+      "startPrice": $("#edit_start_price").val()
+    };
+
+    $.ajax({
+      url: "/api/bids/add",
+      type: "POST",
+      data: JSON.stringify(add_bid),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      headers: createAuthorizationTokenHeader(),
+      success: function(data, textStatus, jqXHR) {
+         window.location.replace("/");
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log("ERROR "+ textStatus);
+      }
+    });
+
+});
+
+
+all_auctions.on('click', 'input.delete_auction', function(e) {
+    e.preventDefault();
+    if (confirm("Are you sure you want to delete this auction?")) {
+      var auction_id = $(this).attr('auction_id');
+      var row = $(this).closest('tr'); //najblizi njemu jer taj tr sadrzi bas taj input
+
+      $.ajax({
+        url: "/api/auctions/"+auction_id,
+        type: "DELETE",
+        headers: createAuthorizationTokenHeader(),
+        success: function(data, textStatus, jqXHR) {
+          row.remove();
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log("ERROR" + textStatus);
+        }
+      });
+    }
+    });
+
+
+
+var all_auctions = $("#all_auctions");
+$("#get_all_auctions").click(function() {
+  $.ajax({
+    url: "/api/auctions",
+    type: "GET",
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    headers: createAuthorizationTokenHeader(),
+    success: function(data, textStatus, jqXHR) {
+      all_auctions.find('tr:gt(0)').remove();
+      for (var i = 0; i < data.length; i++) {
+        appendAuction(data[i]);
+      }
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      showResponse(jqXHR.status, errorThrown);
+    }
+  });
+});
+
+$("#get_my_auctions").click(function() {
+  $.ajax({
+    url: "/api/auctions/my",
+    type: "GET",
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    headers: createAuthorizationTokenHeader(),
+    success: function(data, textStatus, jqXHR) {
+      all_auctions.find('tr:gt(0)').remove();
+      for (var i = 0; i < data.length; i++) {
+        appendAuction(data[i]);
+      }
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      showResponse(jqXHR.status, errorThrown);
+    }
+  });
+});
+
+$("#get_my_items").click(function() {
+  $.ajax({
+    url: "/api/items/my",
+    type: "GET",
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    headers: createAuthorizationTokenHeader(),
+    success: function(data, textStatus, jqXHR) {
+      all_items.find('tr:gt(0)').remove();
+      for (var i = 0; i < data.length; i++) {
+        appendItem(data[i]);
+      }
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      showResponse(jqXHR.status, errorThrown);
+    }
+  });
+});
+
+
+function appendAuction(auction) {
+  all_auctions.append(
+    '<tr>' +
+    '  <td class="startDate">' + auction.startDate + '</td>' +
+    '  <td class="endDate">' + auction.endDate + '</td>' +
+    '  <td class="startPrice">' + auction.startPrice + '</td>' +
+    '<td> <img src="' + auction.item_pic + '" alt="pi" style="height:60px; width:60px;"> </td>' +
+    '<td> ' + auction.owner + '  </td>' +
+    '<td>' +
+    '<input type="button" class="btn btn-default show_bids" value="show bids"' +
+    'auction_id="' + auction.auction_id + '">' +
+    '<input type="button" class="btn btn-default add_bid" value="add bid"' +
+    'auction_id="' + auction.auction_id + '">' +
+    '<input type="button" class="btn btn-default edit_auction" value="edit"' +
+    'auction_id="' + auction.auction_id + '">' +
+    '<input class="btn btn-default delete_auction" type="button" value="delete"' +
+    'auction_id="' + auction.auction_id + '">' +
+    '  </td>' +
+    '</tr>'
+  );
+}
+
+//////////////////////ITEMS===================================
     $("#add_new_item").click(function() {
       $("#add_item_window").modal("show");
       $("#upload-file-input").on("change", uploadFile);
@@ -105,11 +384,6 @@ $(function () {
                 dataType: "json",
                 headers: createAuthorizationTokenHeader(),
                 success: function(data, textStatus, jqXHR) {
-                  // appendItem(data);
-                  // $("#upload-file-input").val("");
-                  // $("#item_name").val("");
-                  // $("#item_desc").val("");
-                  // $("#add_item_window").modal("hide");
                    window.location.replace("/");
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
@@ -148,6 +422,7 @@ $(function () {
     function appendItem(item) {
         all_items.append(
           '<tr>' +
+          '  <td class="name">' + item.id + '</td>' +
           '<td> <img src="' + item.picture + '" alt="pi" style="height:60px; width:60px;"> </td>' +
           '  <td class="name">' + item.name + '</td>' +
           '  <td class="desc">' + item.description + '</td>' +

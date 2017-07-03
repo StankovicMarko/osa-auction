@@ -33,4 +33,5 @@ public class ItemService implements ItemServiceInterface {
 	public void remove(Integer id) {
 		itemRepository.delete(id);
 	}
+	
 }

@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import projekat.osa.osa532015.entity.Auction;
 import projekat.osa.osa532015.entity.Authority;
 import projekat.osa.osa532015.entity.Bid;
@@ -21,6 +23,7 @@ public class UserDTO implements Serializable {
 	
 	private String email;
 	
+	@JsonIgnore
 	private String password;
 	
 	private String picture;
@@ -29,10 +32,13 @@ public class UserDTO implements Serializable {
 	
 	private String phone;
 	
+	@JsonIgnore
 	private List<Authority> authorities;
 	
+	@JsonIgnore
 	private Set<Bid> bids = new HashSet<Bid>();
 	
+	@JsonIgnore
 	private Set<Auction> auctions = new HashSet<>();
 	
 	

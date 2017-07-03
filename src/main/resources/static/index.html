@@ -80,23 +80,51 @@
             </div>
         </div>
 
-        <!-- <div class="col-md-6">
-            <div class="btn-group" role="group" aria-label="..." style="margin-bottom: 16px;">
-                <button type="button" class="btn btn-default" id="exampleServiceBtn">call example service</button>
-                <button type="button" class="btn btn-default" id="adminServiceBtn">call admin protected service</button>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Response:</h3>
-                </div>
-                <div class="panel-body">
-                    <pre id="response"></pre>
-                </div>
-            </div>
-        </div> -->
     </div>
 
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">user details</h3>
+                </div>
+                <div class="panel-body">
+                  <input type="button" id="get_user_details" value="show all details" class="btn btn-default">
+                  <input type="button" id="send_changes" value="send_changes" class="btn btn-default">
 
+                  <form id="upload-userPic-form">
+                  <label for="upload-userPic-input">Upload your new picture:</label>
+                  <input id="upload-userPic-input" type="file" name="uploadfile" accept="*" />
+                    </form>
+
+                    <div class="form-group">
+                        <img id="img" src="" alt="pi" style="height:60px; width:60px;"/>
+                    </div>
+
+                  <div class="form-group">
+                      <input type="text" class="form-control" id="address" placeholder="address"
+                             required name="address">
+                  </div>
+
+                  <div class="form-group">
+                      <input type="text" class="form-control" id="email" placeholder="email"
+                             required name="email">
+                  </div>
+
+                  <div class="form-group">
+                      <input type="text" class="form-control" id="phone" placeholder="phone"
+                             required name="phone">
+                  </div>
+
+
+
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-md-12">
@@ -107,14 +135,48 @@
                 <div class="panel-body">
                   <input type="button" id="get_all_items" value="show all items" class="btn btn-default">
                   <input type="button" id="add_new_item" value="add_new_item" class="btn btn-default">
+                  <input type="button" id="get_my_items" value="get_my_items" class="btn btn-default">
                     <table class="table-bordered" id="all_items">
                       <thead>
                       <tr>
+                      <th> id </th>
                       <th> picture </th>
                       <th> name </th>
                       <th> description </th>
                       <th> owner </th>
                       <th> sold? </th>
+                      <th> options </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+
+                    </table>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Auctions</h3>
+                </div>
+                <div class="panel-body">
+                  <input type="button" id="get_all_auctions" value="show all auctions" class="btn btn-default">
+                  <input type="button" id="add_new_auction" value="add_new_auction" class="btn btn-default">
+                    <input type="button" id="get_my_auctions" value="get_my_auctions" class="btn btn-default">
+                    <table class="table-bordered" id="all_auctions">
+                      <thead>
+                      <tr>
+                      <th> start date </th>
+                      <th> end date </th>
+                      <th> start price </th>
+                      <th> item </th>
+                      <th> owner </th>
                       <th> options </th>
                     </tr>
                     </thead>
@@ -190,6 +252,104 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id="add_auction_window">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">add auction</h4>
+            </div>
+            <div class="modal-body">
+
+              <div class="form-group">
+              <div class='input-group' >
+                  <input type='text' class="form-control" id='item_id' placeholder="enter item id"/>
+              </div>
+              </div>
+
+              <div class="form-group">
+              <div class='input-group date' >
+                  <input type='text' class="form-control" id='start_date' placeholder="start_date" />
+                  <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                  </span>
+              </div>
+          </div>
+
+          <div class="form-group">
+          <div class='input-group date' >
+              <input type='text' class="form-control" id='end_date' placeholder="end_date"/>
+              <span class="input-group-addon">
+                  <span class="glyphicon glyphicon-calendar"></span>
+              </span>
+          </div>
+      </div>
+
+      <div class="form-group">
+      <div class='input-group' >
+          <input type='text' class="form-control" id='start_price' placeholder="start_price"/>
+      </div>
+  </div>
+
+
+            </div>
+            <div class="modal-footer">
+              <button id="add_auction" type="button" class="btn btn-default"> add auction</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id="edit_auction_window">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">edit auction</h4>
+            </div>
+            <div class="modal-body">
+
+              <div class="form-group">
+              <div class='input-group date' >
+                  <input type='text' class="form-control" id='edit_start_date' placeholder="start_date" />
+                  <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                  </span>
+              </div>
+          </div>
+
+          <div class="form-group">
+          <div class='input-group date' >
+              <input type='text' class="form-control" id='edit_end_date' placeholder="end_date"/>
+              <span class="input-group-addon">
+                  <span class="glyphicon glyphicon-calendar"></span>
+              </span>
+          </div>
+      </div>
+
+      <div class="form-group">
+      <div class='input-group' >
+          <input type='text' class="form-control" id='edit_start_price' placeholder="start_price"/>
+      </div>
+  </div>
+
+
+            </div>
+            <div class="modal-footer">
+              <button id="edit_auction" type="button" class="btn btn-default"> add auction</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
 
 
 
