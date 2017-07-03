@@ -13,6 +13,7 @@ $(function () {
 
     var all_items = $("#all_items");
     var all_auctions = $("#all_auctions");
+    var all_bids = $("#all_bids");
     // FUNCTIONS =============================================================
 
 
@@ -82,14 +83,6 @@ $("#get_user_details").click(function() {
     }
   });
 });
-
-
-
-
-
-
-
-
 
 
 
@@ -164,24 +157,27 @@ all_auctions.on('click', 'input.edit_auction', function(e) {
 });
 
 all_auctions.on('click', 'input.add_bid', function(e) {
-  $("#edit_auction_window").modal("show");
   var auction_id = $(this).attr('auction_id');
+  var row = $(this).closest('tr');
   var sp_el = row.find(".startPrice");
   var startPrice = sp_el.text();
+  var bid_price = parseFloat(startPrice);
     var add_bid = {
       "auction_id": auction_id,
-      "startPrice": $("#edit_start_price").val()
+      "price": bid_price
     };
 
+    console.log(add_bid);
+
     $.ajax({
-      url: "/api/bids/add",
+      url: "/api/bids",
       type: "POST",
       data: JSON.stringify(add_bid),
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       headers: createAuthorizationTokenHeader(),
       success: function(data, textStatus, jqXHR) {
-         window.location.replace("/");
+         console.log("successfuly bid " + data);
       },
       error: function(jqXHR, textStatus, errorThrown) {
         console.log("ERROR "+ textStatus);
@@ -189,6 +185,8 @@ all_auctions.on('click', 'input.add_bid', function(e) {
     });
 
 });
+
+
 
 
 all_auctions.on('click', 'input.delete_auction', function(e) {
@@ -211,6 +209,38 @@ all_auctions.on('click', 'input.delete_auction', function(e) {
     }
     });
 
+
+    all_auctions.on('click', 'input.show_bids', function(e) {
+      $("#show_bids_window").modal("show");
+      $.ajax({
+        url: "/api/bids",
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        headers: createAuthorizationTokenHeader(),
+        success: function(data, textStatus, jqXHR) {
+          all_bids.find('tr:gt(0)').remove();
+          for (var i = 0; i < data.length; i++) {
+            appendBid(data[i]);
+          }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          showResponse(jqXHR.status, errorThrown);
+        }
+      });
+    });
+
+
+    function appendBid(bid) {
+      all_bids.append(
+        '<tr>' +
+        '  <td class="">' + bid.date + '</td>' +
+        '  <td class="">' + bid.price + '</td>' +
+        '  <td class="">' + bid.user_id + '</td>' +
+        '<td> ' + bid.auction_id + '  </td>' +
+        '</tr>'
+      );
+    }
 
 
 var all_auctions = $("#all_auctions");

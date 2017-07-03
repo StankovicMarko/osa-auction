@@ -3,6 +3,8 @@ package projekat.osa.osa532015.dto;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import projekat.osa.osa532015.entity.Bid;
 
 
@@ -10,14 +12,15 @@ public class BidDTO implements Serializable{
 	
 	private Integer id;
 	private Float price;
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="CET")
 	private Date date;
-	private long user_id;
-	private long auction_id;
+	private Integer user_id;
+	private Integer auction_id;
 	
 	
 	public BidDTO(){}
 
-	public BidDTO(Integer id, Float price, Date date, long bid_user, long auction) {
+	public BidDTO(Integer id, Float price, Date date, Integer bid_user, Integer auction) {
 		super();
 		this.id = id;
 		this.price = price;
@@ -57,19 +60,19 @@ public class BidDTO implements Serializable{
 		this.date = date;
 	}
 
-	public long getUser_id() {
+	public Integer getUser_id() {
 		return user_id;
 	}
 
-	public void setUser_id(long user_id) {
+	public void setUser_id(Integer user_id) {
 		this.user_id = user_id;
 	}
 
-	public long getAuction_id() {
+	public Integer getAuction_id() {
 		return auction_id;
 	}
 
-	public void setAuction_id(long auction_id) {
+	public void setAuction_id(Integer auction_id) {
 		this.auction_id = auction_id;
 	}
 

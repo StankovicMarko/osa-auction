@@ -28,7 +28,7 @@ public class Bid implements Serializable {
 	private Integer id;
 	
 	
-	@Column(name="bid_price", unique=true, nullable=false)
+	@Column(name="price", unique=false, nullable=false)
 	private Float price;
 	
 	@Temporal(TIMESTAMP)
