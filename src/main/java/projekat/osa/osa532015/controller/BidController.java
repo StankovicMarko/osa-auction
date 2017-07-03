@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -49,12 +50,15 @@ public class BidController {
 	
 	
 	
-	@GetMapping
-	public ResponseEntity<List<BidDTO>> getBids() {
+	@GetMapping(value="/{id}")
+	public ResponseEntity<List<BidDTO>> getBids(@PathVariable("id") Integer id) {
 		List<Bid> bids = bidService.findAll();
 		List<BidDTO> bidsDTO = new ArrayList<BidDTO>();
 		for (Bid b : bids) {
-			bidsDTO.add(new BidDTO(b));
+			if (b.getAuction().getAuction_id() == id) {
+				bidsDTO.add(new BidDTO(b));
+			}
+			
 		}
 		return new ResponseEntity<List<BidDTO>>(bidsDTO, HttpStatus.OK);
 	}

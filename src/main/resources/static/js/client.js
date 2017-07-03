@@ -211,9 +211,10 @@ all_auctions.on('click', 'input.delete_auction', function(e) {
 
 
     all_auctions.on('click', 'input.show_bids', function(e) {
+      var auction_id = $(this).attr('auction_id');
       $("#show_bids_window").modal("show");
       $.ajax({
-        url: "/api/bids",
+        url: "/api/bids/"+auction_id,
         type: "GET",
         contentType: "application/json; charset=utf-8",
         dataType: "json",
